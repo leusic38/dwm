@@ -56,41 +56,125 @@ click on a tag label applies that tag to the focused window.
 click on a tag label adds/removes that tag to/from the focused window.
 .SS Keyboard commands
 .TP
-.B Mod1\-Shift\-Return
-Start
-.BR st(1).
+.B Mod1\-`
+Focus previous client.
 .TP
-.B Mod1\-p
-Spawn
-.BR dmenu(1)
-for launching other programs.
+.B Mod1\-Shift\-`
+Send focused client to previous client, if any.
 .TP
-.B Mod1\-,
-Focus previous screen, if any.
+.B Mod1\-[1..n]
+View all windows with nth tag.
 .TP
-.B Mod1\-.
-Focus next screen, if any.
+.B Mod1\-0
+View all windows with any tag.
 .TP
-.B Mod1\-Shift\-,
-Send focused window to previous screen, if any.
+.B Mod1\-Shift\-[1..n]
+Apply nth tag to focused window.
 .TP
-.B Mod1\-Shift\-.
-Send focused window to next screen, if any.
+.B Mod1\-Shift\-0
+Apply all tags to focused window.
 .TP
-.B Mod1\-b
-Toggles bar on and off.
+.B Mod1\-Control\-[1..n]
+Add/remove all windows with nth tag to/from the view.
+.TP
+.B Mod1\-Control\-Shift\-[1..n]
+Add/remove nth tag to/from focused window.
+.TP
+.B Mod1\-minus
+Decrease gaps
+.TP
+.B Mod1\-Shift\-minus
+Nothing
+.TP
+.B Mod1\-=
+Increase gaps
+.TP
+.B Mod1\-Shift\-=
+Nothing
+.TP
+.B Mod1\-backspace
+Kill client
+.TP
+.B Mod1\-Shift\-backspace
+Quit
+.TP
+.B Mod1\-Ctrl\-backspace
+Reboot
+.TP
+.B Mod1\-alt\-backspace
+Shutdown
+.TP
+.B Mod1\-tab
+Focus previous tag.
+.TP
+.B Mod1\-q
+Focus first position client.
+.TP
+.B Mod1\-Shift\-q
+Send focused client to first position.
+.TP
+.B Mod1\-w
+Open default Browser env.
+.TP
+.B Mod1\-Shift\-w
+Open networkManagerTUI.
+.TP
+.B Mod1\-e
+Open EDI env.
+.TP
+.B Mod1\-Shift\-e
+Open Code
+.TP
+.B Mod1\-r
+lf.
+.TP
+.B Mod1\-Shift\-r
+sudo lf.
 .TP
 .B Mod1\-t
 Sets tiled layout.
 .TP
-.B Mod1\-f
-Sets floating layout.
+.B Mod1\-Shift\-t
+Sets No layout.
 .TP
-.B Mod1\-m
-Sets monocle layout.
+.B Mod1\-y
+Sets centered master layout.
 .TP
-.B Mod1\-space
-Toggles between current and previous layout.
+.B Mod1\-Shift\-y
+Sets centered floating master layout.
+.TP
+.B Mod1\-u
+Sets spiral layout.
+.TP
+.B Mod1\-Shift\-u
+Sets dwindle layout.
+.TP
+.B Mod1\-Control\-Shift\-u
+Sets Monocle layout.
+.TP
+.B Mod1\-i
+Open LibreOffice.
+.TP
+.B Mod1\-o
+Open lf on HDD.
+.TP
+.B Mod1\-Shift\-o
+Open lf on development.
+.TP
+.B Mod1\-p
+Open Postman
+.TP
+.B Mod1\-Shift\-p
+Open terminal in Projects folder
+.TP
+.B Mod1\-\\
+Increase number of windows in master area
+.TP
+.B Mod1\-Shift\-\\
+Decrease number of windows in master area
+.TP
+.B Mod1\-h
+Decrease master area size.
 .TP
 .B Mod1\-j
 Focus next window.
@@ -107,11 +191,12 @@ Decrease number of windows in master area.
 .B Mod1\-l
 Increase master area size.
 .TP
-.B Mod1\-h
-Decrease master area size.
-.TP
 .B Mod1\-Return
 Zooms/cycles focused window to/from master area (tiled layouts only).
+.TP
+.B Mod1\-Shift\-Return
+Start
+.BR st(1).
 .TP
 .B Mod1\-Shift\-c
 Close focused window.
@@ -121,24 +206,6 @@ Toggle focused window between tiled and floating state.
 .TP
 .B Mod1\-Tab
 Toggles to the previously selected tags.
-.TP
-.B Mod1\-Shift\-[1..n]
-Apply nth tag to focused window.
-.TP
-.B Mod1\-Shift\-0
-Apply all tags to focused window.
-.TP
-.B Mod1\-Control\-Shift\-[1..n]
-Add/remove nth tag to/from focused window.
-.TP
-.B Mod1\-[1..n]
-View all windows with nth tag.
-.TP
-.B Mod1\-0
-View all windows with any tag.
-.TP
-.B Mod1\-Control\-[1..n]
-Add/remove all windows with nth tag to/from the view.
 .TP
 .B Mod1\-Shift\-q
 Quit dwm.
