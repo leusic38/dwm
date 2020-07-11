@@ -16,8 +16,8 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#007700";
-static char selbgcolor[]            = "#007700";
+static char selbordercolor[]        = "#004400";
+static char selbgcolor[]            = "#004400";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
@@ -116,8 +116,8 @@ static Key keys[] = {
 	/* {MODKEY|ShiftMask,		XK_Tab,  		spawn,		{} }*/
 	/***********           q use with stack actions 	        ***************/	
 	{ MODKEY,			XK_w,			spawn,		SHCMD("$BROWSER") },
-	{ MODKEY|ShiftMask,		XK_w,			spawn,		SHCMD("google-chrome-stable") },
-	{ MODKEY|ControlMask|ShiftMask,	XK_w,			spawn,		SHCMD("st -e sudo nmtui") },
+	{ MODKEY|ShiftMask,		XK_w,			spawn,		SHCMD("$BROWSER_2") },
+	{ MODKEY|ControlMask|ShiftMask,	XK_w,			spawn,		SHCMD("$BROWSER_3") },
 	{ MODKEY,			XK_e,			spawn,		SHCMD("$EDI") },
 	{ MODKEY|ShiftMask,		XK_e,			spawn,		SHCMD("code") },
 	/*{ MODKEY|ControlMask|ShiftMask,	XK_e,			spawn,		SHCMD("postman") },*/
@@ -134,6 +134,7 @@ static Key keys[] = {
 	/*{ MODKEY|ShiftMask,             XK_i,			incrovgaps,     {.i = +1 } },*/
 	/*{ MODKEY|Mod1Mask,              XK_i,			incrohgaps,     {.i = +1 } },*/
 	/*{ MODKEY|ControlMask,           XK_i,			incrivgaps,     {.i = +1 } },*/
+	{ MODKEY|ControlMask|ShiftMask,	XK_i,			spawn,		SHCMD("st -e sudo nmtui") },
 	{ MODKEY,			XK_o,			spawn,     	SHCMD("st -e lf") },
 	{ MODKEY|ShiftMask,		XK_o,			spawn,     	SHCMD("st -e lf /hdd") },
 	{ MODKEY|ShiftMask|Mod1Mask,    XK_o,			spawn,     	SHCMD("st -e lf /development") },
@@ -164,7 +165,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_l,      		setmfact,      	{.f = +0.15} },
 	/* { MODKEY,			XK_semicolon,		spawn,		SHCMD("") }, */
 	/* { MODKEY|ShiftMask,		XK_semicolon,		spawn,		SHCMD("") }, */
-	/* { MODKEY,			XK_apostrophe,		spawn,		SHCMD("") }, */
+	{ MODKEY,			XK_apostrophe,		spawn,		SHCMD("st -e man dwm") },
 	/* { MODKEY|ShiftMask,		XK_apostrophe,		spawn,		SHCMD("") }, */
 	{ MODKEY,		        XK_Return, 		spawn,         	{.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return, 		spawn,         	{.v = termcmd } },
