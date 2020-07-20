@@ -35,6 +35,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Qalculate-gtk",     NULL,       NULL,       0,            1,           -1 },
+	{ "Alsamixer",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "Spotify",  NULL,       NULL,       1 << 8,       0,           0 },
 };
@@ -44,17 +45,21 @@ static const float mfact     = 0.70707070707070; /* factor of master area size [
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
-#include "fibonacci.c"
+#include "layoutsgaps.c"
 #include "swiftview.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "TTT",      bstack },
 	{ "|M|",      centeredmaster },
-	{ ">M>",      centeredfloatingmaster },
+
+	{ "[D]",      deck },
  	{ "[@]",      spiral },
  	{ "[\\]",      dwindle },
+
+	{ ">M>",      centeredfloatingmaster },
 	{ "[M]",      monocle },
+	{ "><>",      NULL },    /* no layout function means floating behavior */
 };
 
 /* key definitions */
@@ -125,21 +130,18 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_r,			spawn,		SHCMD("st -e sudo lf /") },
 	{ MODKEY,                       XK_t,      		setlayout,     	{.v = &layouts[0]} },
 	{ MODKEY|ShiftMask,		XK_t,      		setlayout,     	{.v = &layouts[1]} },
-	{ MODKEY,                       XK_y,      		setlayout,     	{.v = &layouts[2]}},
-	{ MODKEY|ShiftMask,             XK_y,      		setlayout,     	{.v = &layouts[3]}},
-	{ MODKEY,                       XK_u,      		setlayout,     	{.v = &layouts[4]} },
-	{ MODKEY|ShiftMask,		XK_u,      		setlayout,     	{.v = &layouts[5]} },
-	{ MODKEY|ControlMask|ShiftMask,	XK_u,      		setlayout,     	{.v = &layouts[6]} },
+	{ MODKEY|ControlMask|ShiftMask,	XK_t,      		setlayout,     	{.v = &layouts[2]} },
+	{ MODKEY,                       XK_y,      		setlayout,     	{.v = &layouts[3]}},
+	{ MODKEY|ShiftMask,             XK_y,      		setlayout,     	{.v = &layouts[4]}},
+	{ MODKEY|ControlMask|ShiftMask, XK_y,      		setlayout,     	{.v = &layouts[5]}},
+	{ MODKEY,                       XK_u,      		setlayout,     	{.v = &layouts[6]} },
+	{ MODKEY|ShiftMask,		XK_u,      		setlayout,     	{.v = &layouts[7]} },
+	{ MODKEY|ControlMask|ShiftMask,	XK_u,      		setlayout,     	{.v = &layouts[8]} },
 	{ MODKEY,                       XK_i,			spawn,     	SHCMD("libreoffice") },
-	/*{ MODKEY|ShiftMask,             XK_i,			incrovgaps,     {.i = +1 } },*/
-	/*{ MODKEY|Mod1Mask,              XK_i,			incrohgaps,     {.i = +1 } },*/
-	/*{ MODKEY|ControlMask,           XK_i,			incrivgaps,     {.i = +1 } },*/
-	{ MODKEY|ControlMask|ShiftMask,	XK_i,			spawn,		SHCMD("st -e sudo nmtui") },
+	{ MODKEY|ShiftMask,		XK_i,			spawn,		SHCMD("st -e sudo nmtui") },
 	{ MODKEY,			XK_o,			spawn,     	SHCMD("st -e lf") },
 	{ MODKEY|ShiftMask,		XK_o,			spawn,     	SHCMD("st -e lf /hdd") },
-	{ MODKEY|ShiftMask|Mod1Mask,    XK_o,			spawn,     	SHCMD("st -e lf /development") },
-	/*{ MODKEY|Mod1Mask,              XK_o,			incrohgaps,     {.i = -1 } },*/
-	/*{ MODKEY|ControlMask,           XK_o,			incrivgaps,     {.i = -1 } },*/
+	{ MODKEY|ControlMask|ShiftMask, XK_o,			spawn,     	SHCMD("st -e lf /development") },
 	{ MODKEY,			XK_p,			spawn,		SHCMD("postman") },
 	{ MODKEY|ShiftMask,		XK_p,			spawn,		SHCMD("st -e cdpj") },
 	/*{ MODKEY,			XK_bracketleft,		spawn,		SHCMD("mpc seek -10") }, */
@@ -154,10 +156,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_s,			togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_d,      		spawn,         	SHCMD("dbeaver") },
 	{ MODKEY|ShiftMask,		XK_d,      		spawn,         	{.v = dmenucmd } },
-	/* { MODKEY,                       XK_f,      		setlayout,     	{.v = &layouts[1]} },*/
-	{ MODKEY|ShiftMask,		XK_f,			togglefullscr,	{0} },
+	{ MODKEY,			XK_f,			togglefullscr,	{0} },
+	/* { MODKEY|ShiftMask,                       XK_f,      		setlayout,     	{.v = &layouts[1]} },*/
 	{ MODKEY,			XK_g,			shiftview,	{ .i = -1 } },
-	/* { MODKEY|ShiftMask,		XK_g,			spawn,		SHCMD("") }, */
+	{ MODKEY|ShiftMask,		XK_g,			shifttag,	{.i = -1} },
 	{ MODKEY,                       XK_h,      		setmfact,      	{.f = -0.05} },
 	{ MODKEY|ShiftMask,		XK_h,      		setmfact,      	{.f = -0.15} },
 	/***********           j and k use with stack actions         ***************/	
@@ -191,8 +193,15 @@ static Key keys[] = {
 	{ MODKEY,			XK_space,		zoom,		{0} },
 	{ MODKEY|ShiftMask,             XK_space,  		togglefloating,	{0} },
 	{ MODKEY,			XK_Page_Up,		shiftview,	{ .i = -1 } },
+	{ MODKEY|ShiftMask,		XK_Page_Up,		shifttag,	{ .i = -1 } },
 	{ MODKEY,			XK_Page_Down,		shiftview,	{ .i = 1 } },
+	{ MODKEY|ShiftMask,		XK_Page_Down,		shifttag,	{ .i = 1 } },
 	{ MODKEY,			XK_Insert,		spawn,		SHCMD("notify-send \"📋 Clipboard contents:\" \"$(xclip -o -selection clipboard)\"") },
+
+	{ MODKEY,			XK_Left,	focusmon,	{.i = -1 } },
+	{ MODKEY|ShiftMask,		XK_Left,	tagmon,		{.i = -1 } },
+	{ MODKEY,			XK_Right,	focusmon,	{.i = +1 } },
+	{ MODKEY|ShiftMask,		XK_Right,	tagmon,		{.i = +1 } },
 
 	/*{ MODKEY,			XK_F1,			spawn,		SHCMD("") },*/
 	{ MODKEY,			XK_F2,			quit,		{0} },
