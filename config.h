@@ -88,6 +88,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+
 #include <X11/XF86keysym.h>
 static Key keys[] = {
 	/* modifier                     key        		function        argument */
@@ -183,7 +184,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_n,			spawn,		SHCMD("teams") },
 	{ MODKEY|ControlMask|ShiftMask,	XK_n,			spawn,		SHCMD("pkill -9 teams") },
 	{ MODKEY,                       XK_m,      		spawn,     	SHCMD("st -e msk") },
-	{ MODKEY|ShiftMask,		XK_m,      		spawn,		SHCMD("keepass") },
+	{ MODKEY|ShiftMask,		XK_m,      		spawn,		SHCMD("bitwarden-desktop") },
 	{ MODKEY,                       XK_comma,  		focusmon,      	{.i = -1 } },
 	{ MODKEY,                       XK_period, 		focusmon,      	{.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  		tagmon,        	{.i = -1 } },
@@ -216,8 +217,8 @@ static Key keys[] = {
 	/* { MODKEY,			XK_F11,			spawn,		SHCMD("") }, */
 	/* { MODKEY,			XK_F12,			spawn,		SHCMD("") }, */
 
-	{ 0,				XK_Print,		spawn,		SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
-	{ ShiftMask,			XK_Print,		spawn,		SHCMD("maimscript") },
+	{ 0,				XK_Print,		spawn,		SHCMD("maim /hdd/Images/screenshots/pic-full-$(date '+%y%m%d-%H%M-%S').png") },
+	{ ShiftMask,			XK_Print,		spawn,		SHCMD("printscript") },
 	/*{ MODKEY,			XK_Print,		spawn,		SHCMD("") },
 	{ MODKEY|ShiftMask,		XK_Print,		spawn,		SHCMD("") },
 	{ MODKEY,			XK_Delete,		spawn,		SHCMD("") },
