@@ -32,12 +32,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Qalculate-gtk",     NULL,       NULL,       0,            1,           -1 },
-	{ "Alsamixer",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "Spotify",  NULL,       NULL,       1 << 8,       0,           0 },
+	/* class     	 	instance    title       tags mask     isfloating   monitor */
+	{ "Gimp",    		NULL,       NULL,       0,            1,           -1 },
+	{ "Qalculate-gtk",   	NULL,       NULL,       0,            1,           -1 },
+	{ "Alsamixer",     	NULL,       NULL,       0,            1,           -1 },
+	{ "Firefox",  		NULL,       NULL,       1 << 7,       0,           -1 },
+	{ "Spotify",  		NULL,       NULL,       1 << 8,       0,           0 },
 };
 
 /* layout(s) */
@@ -53,9 +53,9 @@ static const Layout layouts[] = {
 	{ "TTT",      bstack },
 	{ "|M|",      centeredmaster },
 
-	{ "[D]",      deck },
  	{ "[@]",      spiral },
  	{ "[\\]",      dwindle },
+	{ "[D]",      deck },
 
 	{ ">M>",      centeredfloatingmaster },
 	{ "[M]",      monocle },
@@ -183,7 +183,7 @@ static Key keys[] = {
 	{ MODKEY,			XK_n,			spawn,		SHCMD("st -e newsboat; pkill -RTMIN+6 dwmblocks") },
 	{ MODKEY|ShiftMask,		XK_n,			spawn,		SHCMD("teams") },
 	{ MODKEY|ControlMask|ShiftMask,	XK_n,			spawn,		SHCMD("pkill -9 teams") },
-	{ MODKEY,                       XK_m,      		spawn,     	SHCMD("st -e msk") },
+	{ MODKEY,                       XK_m,      		spawn,     	SHCMD("st -e man dwm") },
 	{ MODKEY|ShiftMask,		XK_m,      		spawn,		SHCMD("bitwarden-desktop") },
 	{ MODKEY,                       XK_comma,  		focusmon,      	{.i = -1 } },
 	{ MODKEY,                       XK_period, 		focusmon,      	{.i = +1 } },
@@ -263,6 +263,10 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
+	{ ClkStatusText,        0,              Button4,        sigdwmblocks,   {.i = 4} },
+	{ ClkStatusText,        0,              Button5,        sigdwmblocks,   {.i = 5 },
+	{ ClkStatusText,        0,              Button8,        sigdwmblocks,   {.i = 8} },
+	{ ClkStatusText,        0,              Button9,        sigdwmblocks,   {.i = 9} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
