@@ -128,7 +128,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_e,			spawn,		SHCMD("code") },
 	/*{ MODKEY|ControlMask|ShiftMask,	XK_e,			spawn,		SHCMD("postman") },*/
 	{ MODKEY,			XK_r,			spawn,		SHCMD("st -e lf") },
-	{ MODKEY|ShiftMask,		XK_r,			spawn,		SHCMD("st -e sudo lf /") },
+	{ MODKEY|ShiftMask,		XK_r,			spawn,		SHCMD("st -e lf /hdd") },
+	{ MODKEY|ControlMask,			XK_r,			spawn,		SHCMD("st -e lf /development") },
+	{ MODKEY|ControlMask|ShiftMask,		XK_r,			spawn,		SHCMD("st -e sudo lf /") },
 	{ MODKEY,                       XK_t,      		setlayout,     	{.v = &layouts[0]} },
 	{ MODKEY|ShiftMask,		XK_t,      		setlayout,     	{.v = &layouts[1]} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_t,      		setlayout,     	{.v = &layouts[2]} },
@@ -176,8 +178,8 @@ static Key keys[] = {
 	/***********           z and x use with stack actions         ***************/	
 	{ MODKEY,			XK_c,      		killclient,    	{0} },
 	{ MODKEY|ShiftMask,             XK_c,      		killclient,    	{0} },
-	{ MODKEY,			XK_v,			spawn,		SHCMD("st -e sudo openvpn /home/manu/openVpnConfig/pfSense-UDP4-1194-efarcis-config.ovpn") },
-	{ MODKEY|ShiftMask,		XK_v,			spawn,		SHCMD("st -e /usr/NX/bin/nxplayer") },
+	{ MODKEY,			XK_v,			spawn,		SHCMD("vlc") },
+	{ MODKEY|ShiftMask,		XK_v,			spawn,		SHCMD("twitch") },
 	{ MODKEY,                       XK_b,      		togglebar,     	{0} },
 	{ MODKEY|ShiftMask,		XK_b,      		togglebar,     	{0} },
 	{ MODKEY,			XK_n,			spawn,		SHCMD("st -e newsboat; pkill -RTMIN+6 dwmblocks") },
@@ -189,8 +191,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, 		focusmon,      	{.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  		tagmon,        	{.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, 		tagmon,        	{.i = +1 } },
-	/* { MODKEY,			XK_slash,		spawn,		SHCMD("") }, */
-	/* { MODKEY|ShiftMask,		XK_slash,		spawn,		SHCMD("") }, */
+	{ MODKEY,			XK_slash,			spawn,		SHCMD("st -e sudo openvpn /home/manu/openVpnConfig/pfSense-UDP4-1194-efarcis-config.ovpn") },
+	{ MODKEY|ShiftMask,		XK_slash,			spawn,		SHCMD("st -e /usr/NX/bin/nxplayer") },
 	{ MODKEY,			XK_space,		zoom,		{0} },
 	{ MODKEY|ShiftMask,             XK_space,  		togglefloating,	{0} },
 	{ MODKEY,			XK_Page_Up,		shiftview,	{ .i = -1 } },
