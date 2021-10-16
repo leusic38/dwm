@@ -60,7 +60,10 @@
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
-#define TAGMASK                 ((1 << LENGTH(tags)) - 1)
+#define NUMTAGS					(LENGTH(tags) + LENGTH(scratchpads))
+#define TAGMASK     			((1 << NUMTAGS) - 1)
+#define SPTAG(i) 				((1 << LENGTH(tags)) << (i))
+#define SPTAGMASK   			(((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TRUNC(X,A,B)            (MAX((A), MIN((X), (B))))
 #define XRDB_LOAD_COLOR(R,V)    if (XrmGetResource(xrdb, R, NULL, &type, &value) == True) { \
@@ -198,7 +201,6 @@ static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
-static int getdwmblockspid();
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
@@ -249,7 +251,6 @@ static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigchld(int unused);
-static void sigdwmblocks(const Arg *arg);
 static void spawn(const Arg *arg);
 static int stackpos(const Arg *arg);
 static void tag(const Arg *arg);
@@ -283,6 +284,10 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xrdb(const Arg *arg);
 static void zoom(const Arg *arg);
+#ifndef __OpenBSD__
+static int getdwmblockspid();
+static void sigdwmblocks(const Arg *arg);
+#endif
 /*static void bstack(Monitor *m);*/
 /*static void bstackhoriz(Monitor *m);*/
 /*static void centeredmaster(Monitor *m);*/
@@ -292,8 +297,6 @@ static void zoom(const Arg *arg);
 static const char broken[] = "broken";
 static char stext[256];
 static char rawstext[256];
-static int dwmblockssig;
-pid_t dwmblockspid = 0;
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, blw = 0;      /* bar geometry */
@@ -301,6 +304,8 @@ static int bh, blw = 0;      /* bar geometry */
 static int lrpad;            /* sum of left and right padding for text */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
+static int dwmblockssig;
+pid_t dwmblockspid = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
 	[ClientMessage] = clientmessage,
@@ -359,6 +364,11 @@ applyrules(Client *c)
 		{
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
+			if ((r->tags & SPTAGMASK) && r->isfloating) {
+				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
+				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
+			}
+
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
@@ -368,7 +378,7 @@ applyrules(Client *c)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
 }
 
 int
@@ -500,7 +510,7 @@ buttonpress(XEvent *e)
 			arg.ui = 1 << i;
 		} else if (ev->x < x + blw)
 			click = ClkLtSymbol;
-		else if (ev->x > (x = selmon->ww - TEXTW(stext) + lrpad)) {
+		else if (ev->x > (x = selmon->ww - (int)TEXTW(stext) + lrpad)) {
 			click = ClkStatusText;
 
 			char *text = rawstext;
@@ -511,7 +521,7 @@ buttonpress(XEvent *e)
 				if ((unsigned char)text[i] < ' ') {
 					ch = text[i];
 					text[i] = '\0';
-					x += TEXTW(text) - lrpad;
+					x += (int)TEXTW(text) - lrpad;
 					text[i] = ch;
 					text += i+1;
 					i = -1;
@@ -705,34 +715,6 @@ configurerequest(XEvent *e)
 	XSync(dpy, False);
 }
 
-/* void */
-/* deck(Monitor *m) { */
-/* 	unsigned int i, n, h, mw, my; */
-/* 	Client *c; */
-
-/* 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++); */
-/* 	if(n == 0) */
-/* 		return; */
-
-/* 	if(n > m->nmaster) { */
-/* 		mw = m->nmaster */
-/* 			? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) */
-/* 			: 0; */
-/* 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n - m->nmaster); */
-/* 	} */
-/* 	else */
-/* 		mw = m->ww; */
-/* 	for(i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) */
-/* 		if(i < m->nmaster) { */
-/* 			h = (m->wh - my) / (MIN(n, m->nmaster) - i); */
-/* 			resize(c, m->rmaster ? m->wx + m->ww - mw : m->wx, */
-/* 					m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0); */
-/* 			my += HEIGHT(c); */
-/* 		} */
-/* 		else */
-/* 			resize(c, m->rmaster ? m->wx : m->wx + mw, m->wy, */
-/* 					m->ww - mw - (2*c->bw), m->wh - (2*c->bw), 0); */
-/* } */
 
 void
 copyvalidchars(char *text, char *rawtext)
@@ -956,15 +938,27 @@ focusmon(const Arg *arg)
 void
 focusstack(const Arg *arg)
 {
-	int i = stackpos(arg);
-	Client *c, *p;
-	if (i < 0)
-		return;
+	Client *c = NULL, *i;
 
-	for(p = NULL, c = selmon->clients; c && (i || !ISVISIBLE(c));
-	    i -= ISVISIBLE(c) ? 1 : 0, p = c, c = c->next);
-	focus(c ? c : p);
-	restack(selmon);
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
+		return;
+	if (arg->i > 0) {
+		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+		if (!c)
+			for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
+	} else {
+		for (i = selmon->clients; i != selmon->sel; i = i->next)
+			if (ISVISIBLE(i))
+				c = i;
+		if (!c)
+			for (; i; i = i->next)
+				if (ISVISIBLE(i))
+					c = i;
+	}
+	if (c) {
+		focus(c);
+		restack(selmon);
+  }
 }
 
 Atom
@@ -1574,6 +1568,12 @@ run(void)
 }
 
 void
+runAutostart(void) {
+	system("killall -q dwmblocks; dwmblocks &");
+}
+
+
+void
 scan(void)
 {
 	unsigned int i, num;
@@ -1914,6 +1914,10 @@ showhide(Client *c)
 	if (!c)
 		return;
 	if (ISVISIBLE(c)) {
+		if ((c->tags & SPTAGMASK) && c->isfloating) {
+			c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
+			c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
+		}
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
@@ -2062,7 +2066,7 @@ togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
-	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
+	if (selmon->sel->isfullscreen && lockfullscreen) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 	if (selmon->sel->isfloating)
@@ -2092,6 +2096,8 @@ togglescratch(const Arg *arg)
 {
 	Client *c;
 	unsigned int found = 0;
+	unsigned int scratchtag = SPTAG(arg->ui);
+	Arg sparg = {.v = scratchpads[arg->ui].cmd};
 
 	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
 	if (found) {
@@ -2105,8 +2111,10 @@ togglescratch(const Arg *arg)
 			focus(c);
 			restack(selmon);
 		}
-	} else
-		spawn(arg);
+	} else {
+		selmon->tagset[selmon->seltags] |= scratchtag;
+		spawn(&sparg);
+	}
 }
 
 void

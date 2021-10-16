@@ -24,6 +24,20 @@ static char *colors[][3] = {
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
+typedef struct {
+	const char *name;
+	const void *cmd;
+} Sp;
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
+const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "ranger", NULL };
+const char *spcmd3[] = {"keepassxc", NULL };
+static Sp scratchpads[] = {
+	/* name          cmd  */
+	{"spterm",      spcmd1},
+	{"spranger",    spcmd2},
+	{"keepassxc",   spcmd3},
+};
+
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
@@ -86,8 +100,6 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
 #include <X11/XF86keysym.h>
 static Key keys[] = {
@@ -156,7 +168,9 @@ static Key keys[] = {
 	
 	/***********           a use with stack actions         ***************/	
 	{ MODKEY,			XK_s,			togglesticky,	{0} },
-	{ MODKEY|ShiftMask,		XK_s,			togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY|ShiftMask,		XK_s,			togglescratch,  {.ui = 0 } },
+	{ MODKEY|ShiftMask|ControlMask,		XK_s,			togglescratch,  {.ui = 1 } },
+	{ MODKEY|ShiftMask|ALTKEY,		XK_s,			togglescratch,  {.ui = 2 } },
 	{ MODKEY,                       XK_d,      		spawn,         	SHCMD("dbeaver") },
 	{ MODKEY|ShiftMask,		XK_d,      		spawn,         	{.v = dmenucmd } },
 	{ MODKEY,			XK_f,			togglefullscr,	{0} },
