@@ -29,8 +29,8 @@ typedef struct {
 	const void *cmd;
 } Sp;
 const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
-const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "ranger", NULL };
-const char *spcmd3[] = {"keepassxc", NULL };
+const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "lf", NULL };
+const char *spcmd3[] = {"st", "-n", "spcalc", "-f", "monospace:size=16", "-g", "50x20", "-e", "bc", "-lq", NULL };
 static Sp scratchpads[] = {
 	/* name          cmd  */
 	{"spterm",      spcmd1},
@@ -58,7 +58,8 @@ static const Rule rules[] = {
 static const float mfact     = 0.70707070707070; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
-
+static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+#define FORCE_VSPLIT 1
 #include "layoutsgaps.c"
 #include "swiftview.c"
 static const Layout layouts[] = {
@@ -73,6 +74,7 @@ static const Layout layouts[] = {
 
 	{ ">M>",      centeredfloatingmaster },
 	{ "[M]",      monocle },
+	{ "###",      nrowgrid },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 };
 

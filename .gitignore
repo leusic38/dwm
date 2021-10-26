@@ -3,3 +3,4 @@ dwm-*
 *.orig
 patches
 
+.idea
